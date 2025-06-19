@@ -1,8 +1,9 @@
+const express = require('express');
+
 const url = 'https://mcivietnam.com/course-list/';
 const interval = 4000;
 let intervalId;
 
-// Hàm gửi ping
 async function pingURL() {
     try {
         const response = await fetch(url);
@@ -16,34 +17,29 @@ async function pingURL() {
     }
 }
 
-// Bắt đầu ping
 function startPinging() {
     console.log(`[${new Date().toISOString()}] ▶️ Bắt đầu ping...`);
-    pingURL(); // Gọi lần đầu
+    pingURL();
     intervalId = setInterval(pingURL, interval);
 
-    // Hẹn giờ dừng lúc 08:50
     const now = new Date();
     const stopTime = new Date(now);
-    stopTime.setHours(12, 50, 0, 0); // 12:50:00
+    stopTime.setHours(12, 50, 0, 0); // 12:50
     const timeToStop = stopTime.getTime() - now.getTime();
 
     setTimeout(stopPinging, timeToStop);
 }
 
-// Dừng ping
 function stopPinging() {
     clearInterval(intervalId);
     console.log(`[${new Date().toISOString()}] ⏹️ Đã dừng ping.`);
 }
 
-// Hẹn giờ đến 08:40
 function schedulePinging() {
     const now = new Date();
     const startTime = new Date(now);
-    startTime.setHours(8, 40, 0, 0); // 08:40:00
+    startTime.setHours(8, 40, 0, 0); // 08:40
 
-    // Nếu đã quá 08:40 hôm nay, đặt lịch cho ngày mai
     if (now >= startTime) {
         startTime.setDate(startTime.getDate() + 1);
     }
@@ -54,9 +50,21 @@ function schedulePinging() {
 
     setTimeout(() => {
         startPinging();
-        schedulePinging(); // Lặp lại cho ngày hôm sau
+        schedulePinging();
     }, timeToStart);
 }
 
-// Chạy hẹn giờ
+// 👉 Tạo web server để giữ Render luôn "thức"
+const app = express();
+const port = process.env.PORT || 3000;
+
+app.get('/', (req, res) => {
+    res.send('✅ Server đang hoạt động');
+});
+
+app.listen(port, () => {
+    console.log(`🚀 HTTP server listening on port ${port}`);
+});
+
+// 👉 Khởi động script ping
 schedulePinging();
