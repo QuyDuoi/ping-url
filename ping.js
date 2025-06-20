@@ -24,7 +24,7 @@ function startPinging() {
 
     const now = new Date();
     const stopTime = new Date(now);
-    stopTime.setHours(12, 50, 0, 0); // 12:50
+    stopTime.setHours(10, 0, 0, 0); // 10:00
     const timeToStop = stopTime.getTime() - now.getTime();
 
     setTimeout(stopPinging, timeToStop);
